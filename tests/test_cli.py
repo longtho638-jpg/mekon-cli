@@ -88,3 +88,28 @@ class TestRevenueCommands:
         """Revenue report with no data."""
         result = runner.invoke(app, ["revenue", "report"])
         assert result.exit_code == 0
+
+
+class TestDashboardCommand:
+    """Test dashboard command."""
+
+    def test_dash_no_interactive(self):
+        """Dashboard renders in non-interactive mode."""
+        result = runner.invoke(app, ["dash", "--no-interactive"])
+        assert result.exit_code == 0
+        assert "DevOps" in result.output
+        assert "Revenue" in result.output
+        assert "Agents" in result.output
+        assert "System" in result.output
+
+    def test_dash_help(self):
+        """Dashboard help shows options."""
+        result = runner.invoke(app, ["dash", "--help"])
+        assert result.exit_code == 0
+        assert "refresh" in result.output.lower() or "interactive" in result.output.lower()
+
+    def test_dash_appears_in_help(self):
+        """Dash command visible in main help."""
+        result = runner.invoke(app, ["--help"])
+        assert result.exit_code == 0
+        assert "dash" in result.output

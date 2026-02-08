@@ -14,6 +14,7 @@ from src.commands.revenue import revenue_app
 from src.commands.marketing import marketing_app
 from src.commands.agents import agents_app
 from src.commands.system import system_app
+from src.commands.dashboard import dash
 
 app = typer.Typer(
     name="mekon",
@@ -27,6 +28,9 @@ app.add_typer(revenue_app, name="revenue", help="Revenue: payments, analytics, r
 app.add_typer(marketing_app, name="marketing", help="Marketing: leads, content, campaigns")
 app.add_typer(agents_app, name="agents", help="Agents: AI orchestration, LLM management")
 app.add_typer(system_app, name="system", help="System: config, health, info")
+
+# Register standalone commands
+app.command(name="dash")(dash)
 
 
 @app.command()
