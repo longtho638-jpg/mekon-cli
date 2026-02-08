@@ -113,3 +113,102 @@ class TestDashboardCommand:
         result = runner.invoke(app, ["--help"])
         assert result.exit_code == 0
         assert "dash" in result.output
+
+
+class TestInitCommand:
+    """Test init command."""
+
+    def test_init_help(self):
+        """Init help shows usage."""
+        result = runner.invoke(app, ["init", "--help"])
+        assert result.exit_code == 0
+        assert "init" in result.output.lower() or "Initialize" in result.output
+
+    def test_init_creates_directories(self):
+        """Init creates data directories and reports success."""
+        result = runner.invoke(app, ["init"])
+        assert result.exit_code == 0
+        assert "ready" in result.output.lower() or "Init Complete" in result.output
+
+
+class TestMarketCommands:
+    """Test market sub-commands."""
+
+    def test_market_research_help(self):
+        """Market research help shows usage."""
+        result = runner.invoke(app, ["market", "research", "--help"])
+        assert result.exit_code == 0
+        assert "domain" in result.output.lower()
+
+    def test_market_analyze_help(self):
+        """Market analyze help shows usage."""
+        result = runner.invoke(app, ["market", "analyze", "--help"])
+        assert result.exit_code == 0
+        assert "url" in result.output.lower()
+
+    def test_market_competitors_help(self):
+        """Market competitors help shows usage."""
+        result = runner.invoke(app, ["market", "competitors", "--help"])
+        assert result.exit_code == 0
+        assert "domain" in result.output.lower()
+
+
+class TestRecipeCommands:
+    """Test recipe sub-commands."""
+
+    def test_recipe_list_empty(self):
+        """Recipe list works with no recipes."""
+        result = runner.invoke(app, ["recipe", "list"])
+        assert result.exit_code == 0
+        assert "No recipes" in result.output or "recipe" in result.output.lower()
+
+    def test_recipe_create_help(self):
+        """Recipe create help shows usage."""
+        result = runner.invoke(app, ["recipe", "create", "--help"])
+        assert result.exit_code == 0
+        assert "name" in result.output.lower()
+
+    def test_recipe_run_help(self):
+        """Recipe run help shows usage."""
+        result = runner.invoke(app, ["recipe", "run", "--help"])
+        assert result.exit_code == 0
+        assert "name" in result.output.lower()
+
+
+class TestLogsCommands:
+    """Test logs sub-commands."""
+
+    def test_logs_show_empty(self):
+        """Logs show works with no log entries."""
+        result = runner.invoke(app, ["logs", "show"])
+        assert result.exit_code == 0
+        assert "No log entries" in result.output or "log" in result.output.lower()
+
+    def test_logs_tail_empty(self):
+        """Logs tail works with no log entries."""
+        result = runner.invoke(app, ["logs", "tail"])
+        assert result.exit_code == 0
+        assert "No log entries" in result.output or "log" in result.output.lower()
+
+    def test_logs_clear_abort(self):
+        """Logs clear aborts when user declines confirmation."""
+        result = runner.invoke(app, ["logs", "clear"], input="n\n")
+        assert result.exit_code != 0 or "Aborted" in result.output
+
+
+class TestAllCommandsInHelp:
+    """Test that all command groups appear in main help."""
+
+    def test_all_groups_in_help(self):
+        """All 8 command groups appear in --help output."""
+        result = runner.invoke(app, ["--help"])
+        assert result.exit_code == 0
+        for group in ("devops", "revenue", "marketing", "agents", "system", "market", "logs", "recipe"):
+            assert group in result.output, f"'{group}' missing from --help"
+
+    def test_standalone_commands_in_help(self):
+        """Standalone commands dash, init, version appear in --help output."""
+        result = runner.invoke(app, ["--help"])
+        assert result.exit_code == 0
+        for cmd in ("dash", "init", "version"):
+            assert cmd in result.output, f"'{cmd}' missing from --help"

@@ -14,7 +14,11 @@ from src.commands.revenue import revenue_app
 from src.commands.marketing import marketing_app
 from src.commands.agents import agents_app
 from src.commands.system import system_app
+from src.commands.market import market_app
+from src.commands.logs import logs_app
+from src.commands.recipe import recipe_app
 from src.commands.dashboard import dash
+from src.commands.init_cmd import init_cmd
 
 app = typer.Typer(
     name="mekon",
@@ -28,9 +32,13 @@ app.add_typer(revenue_app, name="revenue", help="Revenue: payments, analytics, r
 app.add_typer(marketing_app, name="marketing", help="Marketing: leads, content, campaigns")
 app.add_typer(agents_app, name="agents", help="Agents: AI orchestration, LLM management")
 app.add_typer(system_app, name="system", help="System: config, health, info")
+app.add_typer(market_app, name="market", help="Market: research, analyze, competitors")
+app.add_typer(logs_app, name="logs", help="Logs: activity tracking")
+app.add_typer(recipe_app, name="recipe", help="Recipe: workflow automation")
 
 # Register standalone commands
 app.command(name="dash")(dash)
+app.command(name="init")(init_cmd)
 
 
 @app.command()
@@ -62,6 +70,9 @@ def main(ctx: typer.Context):
             "  [cyan]marketing[/cyan]   Hunt leads, create content, run campaigns\n"
             "  [cyan]agents[/cyan]      AI agent orchestration and LLM management\n"
             "  [cyan]system[/cyan]      Configuration, health checks, info\n"
+            "  [cyan]market[/cyan]      Domain research, page analysis, competitors\n"
+            "  [cyan]logs[/cyan]        Activity log viewer and management\n"
+            "  [cyan]recipe[/cyan]      Workflow recipe automation\n"
             "\n[dim]Run[/dim] [bold cyan]mekon --help[/bold cyan] [dim]for all options[/dim]"
         )
 
